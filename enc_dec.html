@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CryptoJS Encryption & Decryption</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 20px;
+        
+        align-items: center;
+      }
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width:1500px;
+
+      }
+      h1 {
+        text-align: center;
+        color: #000000;
+      }
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 10px;
+        color: #3b3b3b;
+      }
+      textarea {
+        width: 80%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        font-size: 16px;
+        color: #333;
+      }
+      button {
+        background-color: #827bfe;
+        color: #fff;
+        font-weight: 600;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #574bd1;
+      }
+      .box {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        word-wrap: break-word;
+        width:1500px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .box h3 {
+        margin-top: 0;
+        color: #666;
+      }
+      .box div {
+        color: #333;
+        font-family: "Courier New", Courier, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Enc & Dec Nash App</h1>
+      <label for="plaintext">Enter Text to Encrypt or Decrypt:</label>
+      <textarea id="plaintext" rows="5"></textarea>
+      <div>
+        <button onclick="encrypt()">Encrypt</button>
+        <button onclick="decrypt()">Decrypt</button>
+      </div>
+      
+    </div>
+    <div class="box">
+      <h3>Encrypted Data:</h3>
+      <div id="encryptedData"></div>
+    </div>
+    <div class="box">
+      <h3>Decrypted Data:</h3>
+      <div id="decryptedData"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+      function encryptWithAES(plaintext, key, iv) {
+        const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
+          iv: iv,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7
+        });
+        return encrypted.toString();
+      }
+
+      function decryptWithAES(ciphertext, key, iv) {
+        const decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
+          iv: iv,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
+      }
+
+      function encrypt() {
+        document.getElementById("decryptedData").innerText = "";
+        const plaintext = document.getElementById("plaintext").value;
+        const encryptionKey = CryptoJS.enc.Hex.parse("xza548sa3vcr641b5ng5nhy9mlo64r6k");
+        const iv = CryptoJS.enc.Hex.parse("xza548sa3vcr641b");
+
+        const encryptedData = encryptWithAES(plaintext, encryptionKey, iv);
+        document.getElementById("encryptedData").innerText = encryptedData;
+      }
+
+      function decrypt() {
+        document.getElementById("encryptedData").innerText = "";
+        const encryptedData = document.getElementById("plaintext").value;
+        const encryptionKey = CryptoJS.enc.Hex.parse("xza548sa3vcr641b5ng5nhy9mlo64r6k");
+        const iv = CryptoJS.enc.Hex.parse("xza548sa3vcr641b");
+
+        const decryptedData = decryptWithAES(encryptedData, encryptionKey, iv);
+        document.getElementById("decryptedData").innerText = decryptedData;
+      }
+    </script>
+  </body>
+</html>
