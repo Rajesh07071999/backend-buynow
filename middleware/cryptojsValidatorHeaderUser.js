@@ -225,7 +225,7 @@ const cryptojsHeaderValidatorUser = {
         responsejson.data = resData;
       }
       const result = await cryptojsHeaderValidatorUser.encryption(responsejson);
-      res.status(parseInt(resCode)).send(responsejson);
+      res.status(parseInt(resCode)).send(result);
     } catch (error) {
       // console.log(error.message);
       logger.error(error);

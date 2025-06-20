@@ -84,6 +84,7 @@ const userModule = {
         is_deleted: false,
         is_active:true
       });
+      console.log(userData)
       if (userData) {
           const encPass = await userMiddleware.encryption(req.password);
 
