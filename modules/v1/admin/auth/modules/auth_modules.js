@@ -7,6 +7,9 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import GLOBALS from "../../../../../config/constant.js";
 import userModel from "../../../../../database/schema/userSchema.js";
+import productModel from "../../../../../database/schema/productSchema.js";
+import orderModel from "../../../../../database/schema/orderSchema.js";
+import cartModel from "../../../../../database/schema/cartSchema.js";
 const { ObjectId } = mongoose.Types;
 
 const adminAuthModule = {
@@ -16,60 +19,59 @@ const adminAuthModule = {
         email: req.email,
         is_deleted: false,
       });
+      if (adminData) {
 
-      if (adminData?.length>0) {
-     
-          const encPass = await adminMiddleware.encryption(req.password);
-          if (adminData.password == encPass) {
-            const token = jwt.sign(
-              { userId: adminData.id },
-              GLOBALS.JWT_SECRET,
-              {
-                expiresIn: "7d",
-              }
-            );
-            const updateAdminToken = {
-              token: token,
-              login_status: "Online",
-              last_login: new Date(),
-            };
-            try {
-              await common.singleUpdate(updateAdminToken, adminSchema, {
-                email: req.email,
-                is_active: true,
-                is_deleted: false,
-              });
-
-              const adminUpdatedData = await common.singleGet(adminSchema, {
-                email: req.email,
-                is_deleted: false,
-                is_active: true,
-              });
-
-              return adminMiddleware.sendResponse(
-                res,
-                Codes.SUCCESS,
-                lang[req.language].rest_keyword_admin_login_success,
-                adminUpdatedData
-              );
-            } catch (error) {
-              return adminMiddleware.sendResponse(
-                res,
-                Codes.INTERNAL_ERROR,
-                lang[req.language].rest_keywords_something_went_wrong,
-                { message: error.message, stack: error.stack }
-              );
+        const encPass = await adminMiddleware.encryption(req.password);
+        if (adminData.password == encPass) {
+          const token = jwt.sign(
+            { userId: adminData.id },
+            GLOBALS.JWT_SECRET,
+            {
+              expiresIn: "7d",
             }
-          } else {
+          );
+          const updateAdminToken = {
+            token: token,
+            login_status: "Online",
+            last_login: new Date(),
+          };
+          try {
+            await common.singleUpdate(updateAdminToken, adminSchema, {
+              email: req.email,
+              is_active: true,
+              is_deleted: false,
+            });
+
+            const adminUpdatedData = await common.singleGet(adminSchema, {
+              email: req.email,
+              is_deleted: false,
+              is_active: true,
+            });
 
             return adminMiddleware.sendResponse(
               res,
-              Codes.VALIDATION_ERROR,
-              lang[req.language].rest_keyword_invalid_credentials,
-              null
+              Codes.SUCCESS,
+              lang[req.language].rest_keyword_admin_login_success,
+              adminUpdatedData
+            );
+          } catch (error) {
+            return adminMiddleware.sendResponse(
+              res,
+              Codes.INTERNAL_ERROR,
+              lang[req.language].rest_keywords_something_went_wrong,
+              { message: error.message, stack: error.stack }
             );
           }
-      
+        } else {
+
+          return adminMiddleware.sendResponse(
+            res,
+            Codes.VALIDATION_ERROR,
+            lang[req.language].rest_keyword_invalid_credentials,
+            null
+          );
+        }
+
       } else {
         return adminMiddleware.sendResponse(
           res,
@@ -79,8 +81,6 @@ const adminAuthModule = {
         );
       }
     } catch (error) {
-      console.log(error);
-
       return adminMiddleware.sendResponse(
         res,
         Codes.INTERNAL_ERROR,
@@ -96,10 +96,10 @@ const adminAuthModule = {
     const adminData = await common.singleGet(adminSchema, {
       _id: userId,
       is_deleted: false,
-      is_active:true
+      is_active: true
     });
 
-    if (!adminData) {
+    if (adminData) {
       try {
         const updateInfo = {
           login_status: "Offline",
@@ -154,7 +154,7 @@ const adminAuthModule = {
       const adminData = await common.singleGet(adminSchema, {
         _id: userId,
         is_deleted: false,
-        is_active:true
+        is_active: true
       });
 
       if (!adminData) {
@@ -250,7 +250,7 @@ const adminAuthModule = {
       const adminData = await common.singleGet(adminSchema, {
         _id: userId,
         is_deleted: false,
-        is_active:true
+        is_active: true
       });
       if (!adminData) {
         return adminMiddleware.sendResponse(
@@ -296,14 +296,14 @@ const adminAuthModule = {
             is_deleted: false,
           }
         );
-    
+
         const adminUpdatedData = await common.singleGet(adminSchema, {
           _id: userId,
           is_deleted: false,
-          is_active:true
+          is_active: true
         });
-       
-       
+
+
         return adminMiddleware.sendResponse(
           res,
           Codes.SUCCESS,
@@ -351,6 +351,174 @@ const adminAuthModule = {
       return adminMiddleware.sendResponse(
         res,
         Codes.VALIDATION_ERROR,
+        lang[req.language].rest_keywords_something_went_wrong,
+        { message: error.message, stack: error.stack }
+      );
+    }
+  },
+  async dashbaord(req, res) {
+    try {
+      const [totalUsers, totalProducts, totalOrders, totalCarts] = await Promise.all([
+        userModel.countDocuments(),
+        productModel.countDocuments(),
+        orderModel.countDocuments(),
+        cartModel.countDocuments()
+      ]);
+      const dashboardData = {
+        totalUsers,
+        totalProducts,
+        totalOrders,
+        totalCarts
+      }
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.SUCCESS,
+        lang[req.language].rest_keyword_success,
+        dashboardData
+      );
+    } catch (error) {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        lang[req.language].rest_keywords_something_went_wrong,
+        null
+      );
+    }
+  },
+  async userList(req, res) {
+    try {
+      const userLists = await userModel.find({
+        is_deleted: false
+      })
+      if (userLists) {
+        return adminMiddleware.sendResponse(
+          res,
+          Codes.SUCCESS,
+          lang[req.language].rest_keyword_success,
+          userLists
+        );
+      } else {
+        return adminMiddleware.sendResponse(
+          res,
+          Codes.VALIDATION_ERROR,
+          lang[req.language].rest_keywords_something_went_wrong,
+          null
+        );
+      }
+
+    } catch (error) {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        lang[req.language].rest_keywords_something_went_wrong,
+        null
+      );
+    }
+  },
+  async userDetails(req, res) {
+    try {
+      const userId = new ObjectId(req.id);
+      const userInfo = await common.singleGet(userModel, {
+        _id: userId,
+        is_deleted: false,
+      });
+      if (!userInfo) {
+        return adminMiddleware.sendResponse(
+          res,
+          Codes.VALIDATION_ERROR,
+          lang[req.language].rest_keyword_user_not_found,
+          null
+        );
+      } else {
+        return adminMiddleware.sendResponse(
+          res,
+          Codes.SUCCESS,
+          lang[req.language].rest_keyword_success,
+          userInfo
+        );
+      }
+    } catch (error) {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        lang[req.language].rest_keywords_something_went_wrong,
+        { message: error.message, stack: error.stack }
+      );
+    }
+  },
+  async deleteUser(req, res) {
+    try {
+      const userId = new ObjectId(req.id);
+      const userData = await common.singleGet(userModel, {
+        _id: userId,
+        is_active: true,
+        is_deleted: false,
+      });
+
+      if (!userData) {
+        return adminMiddleware.sendResponse(
+          res,
+          Codes.NOT_FOUND,
+          lang[req.language].rest_keyword_product_not_found,
+          null
+        );
+      } else {
+        const deleteUser = await common.singleUpdate(
+          { is_deleted: true, is_active: false },
+          userModel,
+          { _id: userId }
+        );
+        if (deleteUser) {
+          return adminMiddleware.sendResponse(
+            res,
+            Codes.SUCCESS,
+            lang[req.language].rest_keyword_success,
+            null
+          );
+        } else {
+          return adminMiddleware.sendResponse(
+            res,
+            Codes.VALIDATION_ERROR,
+            lang[req.language].rest_keywords_something_went_wrong,
+          );
+        }
+      }
+    } catch (error) {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.INTERNAL_ERROR,
+        lang[req.language].rest_keywords_something_went_wrong
+      );
+    }
+  },
+
+  async userChangeActiveStatus(req, res) {
+    try {
+      const userId = new ObjectId(req.id);
+      const userData = await common.singleUpdate(
+        { is_active: req.status },
+        userModel,
+        { _id: userId }
+      );
+      if (userData) {
+        return adminMiddleware.sendResponse(
+          res,
+          Codes.SUCCESS,
+          lang[req.language].rest_keyword_order_status_updated,
+          null
+        );
+      } else {
+        return adminMiddleware.sendResponse(
+          res,
+          Codes.INTERNAL_ERROR,
+          lang[req.language].rest_keyword_order_status_update_failed,
+          null
+        );
+      }
+    } catch (error) {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.INTERNAL_ERROR,
         lang[req.language].rest_keywords_something_went_wrong,
         { message: error.message, stack: error.stack }
       );

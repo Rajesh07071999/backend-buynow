@@ -19,12 +19,12 @@ const userModule = {
       if (checkEmailUnique) {
         return userMiddleware.sendResponse(
           res,
-          Codes.NOT_FOUND,
+          Codes.DUPLICATE_VALUE,
           lang[req.language].rest_keywords_unique_email_error,
-          null
+          []
         );
-      }
 
+      }
       const checkUniqueMobile = await common.checkUniqueMobile(
         req.mobile_number,
         userSchema
@@ -32,7 +32,7 @@ const userModule = {
       if (checkUniqueMobile) {
         return userMiddleware.sendResponse(
           res,
-          Codes.NOT_FOUND,
+          Codes.DUPLICATE_VALUE,
           lang[req.language].rest_keyword_unique_mobile_number_error,
           null
         );
@@ -52,29 +52,27 @@ const userModule = {
       const registerUser = await common.singleInsert(signupObject, userSchema);
 
       if (registerUser) {
-
         return userMiddleware.sendResponse(
           res,
           Codes.SUCCESS,
           lang[req.language].rest_keywords_success_signup,
-          null
+          registerUser
         );
+
       } else {
         return userMiddleware.sendResponse(
           res,
-          Codes.INTERNAL_ERROR,
-          lang[req.language]
-            .rest_keyword_something_went_wrong_while_signup_user,
+          Codes.SUCCESS,
+          lang[req.language].rest_keyword_something_went_wrong_while_signup_user,
           null
         );
       }
     } catch (error) {
-        return userMiddleware.sendResponse(
-            res,
-            Codes.INTERNAL_ERROR,
-            lang[req.language].rest_keywords_something_went_wrong,
-            { message: error.message, stack: error.stack }
-          );
+      return userMiddleware.sendResponse(
+        res,
+        Codes.INTERNAL_ERROR,
+        lang[req.language].rest_keywords_something_went_wrong
+      );
     }
   },
   async login(req, res) {
@@ -82,73 +80,72 @@ const userModule = {
       const userData = await common.singleGet(userSchema, {
         email: req.email,
         is_deleted: false,
-        is_active:true
+        is_active: true
       });
-      console.log(userData)
+
+
       if (userData) {
-          const encPass = await userMiddleware.encryption(req.password);
+        const encPass = await userMiddleware.encryption(req.password);
 
-          if (userData.password == encPass) {
-            const token = jwt.sign(
-              { userId: userData.id },
-              GLOBALS.JWT_SECRET,
-              {
-                expiresIn: "7d",
-              }
-            );
-            const updateAdminToken = {
-              token: token,
-              login_status: "Online",
-              last_login: new Date(),
-            };
-            try {
-              await common.singleUpdate(updateAdminToken, userSchema, {
-                email: req.email,
-                is_active: true,
-                is_deleted: false,
-              });
-
-              const adminUpdatedData = await common.singleGet(userSchema, {
-                email: req.email,
-                is_deleted: false,
-                is_active: true,
-              });
-
-              return userMiddleware.sendResponse(
-                res,
-                Codes.SUCCESS,
-                lang[req.language].rest_keyword_admin_login_success,
-                adminUpdatedData
-              );
-            } catch (error) {
-              return userMiddleware.sendResponse(
-                res,
-                Codes.INTERNAL_ERROR,
-                lang[req.language].rest_keywords_something_went_wrong,
-                { message: error.message, stack: error.stack }
-              );
+        if (userData.password == encPass) {
+          const token = jwt.sign(
+            { userId: userData.id },
+            GLOBALS.JWT_SECRET,
+            {
+              expiresIn: "7d",
             }
-          } else {
+          );
+          const updateAdminToken = {
+            token: token,
+            login_status: "Online",
+            last_login: new Date(),
+          };
+          try {
+            await common.singleUpdate(updateAdminToken, userSchema, {
+              email: req.email,
+              is_active: true,
+              is_deleted: false,
+            });
+
+            const adminUpdatedData = await common.singleGet(userSchema, {
+              email: req.email,
+              is_deleted: false,
+              is_active: true,
+            });
 
             return userMiddleware.sendResponse(
               res,
-              Codes.VALIDATION_ERROR,
-              lang[req.language].rest_keyword_invalid_credentials,
-              null
+              Codes.SUCCESS,
+              lang[req.language].rest_keyword_admin_login_success,
+              adminUpdatedData
+            );
+          } catch (error) {
+            return userMiddleware.sendResponse(
+              res,
+              Codes.INTERNAL_ERROR,
+              lang[req.language].rest_keywords_something_went_wrong,
+              { message: error.message, stack: error.stack }
             );
           }
-       
+        } else {
+
+          return userMiddleware.sendResponse(
+            res,
+            Codes.VALIDATION_ERROR,
+            lang[req.language].rest_keyword_invalid_credentials,
+            null
+          );
+        }
+
       } else {
         return userMiddleware.sendResponse(
           res,
-          Codes.VALIDATION_ERROR,
+          Codes.NOT_FOUND,
           lang[req.language].rest_keyword_invalid_credentials,
           null
         );
       }
     } catch (error) {
-      console.log(error);
-
       return userMiddleware.sendResponse(
         res,
         Codes.INTERNAL_ERROR,
@@ -164,10 +161,10 @@ const userModule = {
     const userData = await common.singleGet(userSchema, {
       _id: userId,
       is_deleted: false,
-      is_active:true
+      is_active: true
     });
 
-    if (!userData) {
+    if (userData) {
       try {
         const updateInfo = {
           login_status: "Offline",
@@ -222,7 +219,7 @@ const userModule = {
       const userData = await common.singleGet(userSchema, {
         _id: userId,
         is_deleted: false,
-        is_active:true
+        is_active: true
       });
 
       if (!userData) {
@@ -311,13 +308,11 @@ const userModule = {
   },
   async editProfile(req, res) {
     const userId = new ObjectId(req.user_id);
-
-
     try {
       const userData = await common.singleGet(userSchema, {
         _id: userId,
         is_deleted: false,
-        is_active:true
+        is_active: true
       });
       if (!userData) {
         return userMiddleware.sendResponse(
@@ -363,14 +358,11 @@ const userModule = {
             is_deleted: false,
           }
         );
-    
         const UpdatedData = await common.singleGet(userSchema, {
           _id: userId,
           is_deleted: false,
-          is_active:true
+          is_active: true
         });
-       
-       
         return userMiddleware.sendResponse(
           res,
           Codes.SUCCESS,
@@ -379,7 +371,6 @@ const userModule = {
         );
       }
     } catch (error) {
-
       return userMiddleware.sendResponse(
         res,
         Codes.INTERNAL_ERROR,

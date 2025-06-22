@@ -1,5 +1,3 @@
-import adminModel from "../database/schema/adminSchema.js";
-
 const common = {
   async checkUniqueEmail(email,model) {
     try {
@@ -35,7 +33,6 @@ const common = {
       const result = await tableName.create(data);
       return result;
     } catch (error) {
-      console.error("Error in singleInsert:", error);
       throw error;
     }
   },
@@ -45,16 +42,14 @@ const common = {
       const result = await model.updateOne(whereCondition, data);
       return result;
     } catch (error) {
-      console.error("Error in singleUpdate:", error);
       throw error;
     }
   },
   async singleDelete(model, whereCondition) {
     try {
       const result = await model.deleteOne(whereCondition);
-      return result.deletedCount > 0; // returns true if deleted
+      return result.deletedCount > 0;
     } catch (error) {
-      console.error("Error in singleDelete:", error);
       throw error;
     }
   }
@@ -65,7 +60,6 @@ const common = {
       const record = await tableName.findOne(condition);
       return record ? record : null;
     } catch (error) {
-      console.error("Error getting data:", error);
       throw error;
     }
   },

@@ -4,7 +4,7 @@ import authModule from "../modules/auth_modules.js";
 import Codes from "../../../../../config/statusCode.js";
 
 const adminAuthController = {
-  
+
   async login(req, res) {
     const request = await adminMiddleware.decryption(req);
     const valid = await adminMiddleware.checkValidationRules(
@@ -20,12 +20,14 @@ const adminAuthController = {
         res,
         Codes.VALIDATION_ERROR,
         valid.error,
-        null 
+        null
       );
     }
   },
- 
+
   async logout(req, res) {
+
+
     const request = await adminMiddleware.decryption(req);
     const valid = await adminMiddleware.checkValidationRules(
       request,
@@ -92,6 +94,101 @@ const adminAuthController = {
     if (valid.status) {
       // req.language = request.language;
       return authModule.editProfile(request, res);
+    } else {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        valid.error,
+        null
+      );
+    }
+  },
+  async dashbaord(req, res) {
+    const request = await adminMiddleware.decryption(req);
+    const valid = await adminMiddleware.checkValidationRules(
+      request
+    );
+
+    if (valid.status) {
+      req.language = request.language;
+      return authModule.dashbaord(request, res);
+    } else {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        valid.error,
+        null
+      );
+    }
+  },
+
+  async userList(req, res) {
+    const request = await adminMiddleware.decryption(req);
+    const valid = await adminMiddleware.checkValidationRules(
+      request
+
+    );
+
+    if (valid.status) {
+      req.language = request.language;
+      return authModule.userList(request, res);
+    } else {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        valid.error,
+        null
+      );
+    }
+  },
+
+  async userDetails(req, res) {
+    const request = await adminMiddleware.decryption(req);
+    const valid = await adminMiddleware.checkValidationRules(
+      request,
+      validationRules.userDetasilsValidations
+
+    );
+    if (valid.status) {
+      req.language = request.language;
+      req.user_id = request.user_id
+      return authModule.userDetails(request, res);
+    } else {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        valid.error,
+        null
+      );
+    }
+  },
+
+  async deleteUser(req, res) {
+    const request = await adminMiddleware.decryption(req);
+    const valid = await adminMiddleware.checkValidationRules(
+      request,
+      validationRules.deleteUserValidation
+    );
+    if (valid.status) {
+      return authModule.deleteUser(request, res);
+    } else {
+      return adminMiddleware.sendResponse(
+        res,
+        Codes.VALIDATION_ERROR,
+        valid.error,
+        null
+      );
+    }
+  },
+
+  async ChangeActiveStatus(req, res) {
+    const request = await adminMiddleware.decryption(req);
+    const valid = await adminMiddleware.checkValidationRules(
+      request,
+      validationRules.userChangeActiveStatusValidation
+    );
+    if (valid.status) {
+      return authModule.userChangeActiveStatus(request, res);
     } else {
       return adminMiddleware.sendResponse(
         res,

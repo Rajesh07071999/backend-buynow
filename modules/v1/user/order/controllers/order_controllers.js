@@ -39,14 +39,14 @@ const orderAuthController = {
           );
         }
       },
-      async orderUpdateStatas(req, res) {
+      async cancelOrder(req, res) {
         const request = await userMiddleware.decryption(req);
         const valid = await userMiddleware.checkValidationRules(
           request,
-         validationRules.orderCancelValidation
+        
         );
         if (valid.status) {
-          return orderModule.orderUpdateStatas(request, res);
+          return orderModule.cancelOrder(request, res);
         } else {
           return userMiddleware.sendResponse(
             res,

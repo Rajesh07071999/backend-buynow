@@ -19,6 +19,19 @@ const checkValidatorRules = {
     email:"required",
     mobile_number:"required",
     country_code:"required"
+  },
+  userDetasilsValidations : {
+    id  : "required"
+  },
+  deleteUserValidation:{
+    id  : "required"
+
+  },
+
+
+   userChangeActiveStatusValidation:{
+    id: "required",
+    status: "required"
   }
 };
 

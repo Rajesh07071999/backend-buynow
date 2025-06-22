@@ -21,7 +21,7 @@ const orderDetailsSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["Confrimed", "Pending", "Cancelled","Delivered"],
+        enum: ["Confrimed", "Pending", "Cancelled","Delivered","Rejected"],
         default: "Pending"
     },
     is_active: { type: Boolean, default: true },

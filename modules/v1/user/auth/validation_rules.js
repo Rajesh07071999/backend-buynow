@@ -27,7 +27,7 @@ const checkValidatorRules = {
     full_name:"required",
     mobile_number:"required",
     country_code:"required",
-    id:"required"
+    user_id:"required"
   },
 };
 

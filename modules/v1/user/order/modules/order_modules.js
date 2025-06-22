@@ -2,7 +2,6 @@ import userMiddleware from "../../../../../middleware/cryptojsValidatorHeaderUse
 import Codes from "../../../../../config/statusCode.js";
 import lang from "../../../../../config/language.js";
 import userSchema from "../../../../../database/schema/userSchema.js";
-import productSchema from "../../../../../database/schema/productSchema.js";
 import cartSchema from "../../../../../database/schema/cartSchema.js";
 import orderSchema from "../../../../../database/schema/orderSchema.js";
 import orderDetailsSchema from "../../../../../database/schema/orderDetailsSchema.js";
@@ -14,18 +13,16 @@ const orderModule = {
   async orderPlace(req, res) {
     try {
       const userId = new ObjectId(req.user_id);
-
-      for (const element of req) {
+      for (const element of req.orderItems) {
         const delivery_date = new Date();
         delivery_date.setDate(delivery_date.getDate() + 5);
+        await common.singleUpdate({ address: req.address, shipping_address: req.shipping_address }, userSchema, { _id: userId })
         const params = {
           user_id: userId,
-          price: element.price,
+          price: element.total_price,
           delivery_date: delivery_date,
         };
-
         const addOrders = await common.singleInsert(params, orderSchema);
-
         if (!addOrders) {
           return userMiddleware.sendResponse(
             res,
@@ -34,20 +31,17 @@ const orderModule = {
             null
           );
         }
-
-        const orderDetails = req.map((item) => ({
+        const orderDetails = req.orderItems.map((item) => ({
           order_id: addOrders._id,
           product_id: item.product_id,
           qty: item.qty,
           price: item.price,
-          grand_total: item.grand_total,
+          grand_total: req.grand_total,
         }));
-
         const addOrderDetails = await common.singleInsert(
           orderDetails,
           orderDetailsSchema
         );
-
         if (!addOrderDetails) {
           return userMiddleware.sendResponse(
             res,
@@ -57,12 +51,18 @@ const orderModule = {
           );
         } else {
           const deleteCart = await cartSchema.deleteMany({ user_id: userId });
+
+          const orderDetail = {
+            order_id: orderDetails[0].order_id,
+            status: "Pending",
+            delivery_date: addOrders.delivery_date
+          }
           if (deleteCart) {
             return userMiddleware.sendResponse(
               res,
               Codes.SUCCESS,
               lang[req.language].rest_keyword_order_placed_success,
-              null
+              orderDetail
             );
           }
         }
@@ -80,9 +80,9 @@ const orderModule = {
     try {
       const userId = new ObjectId(req.user_id);
 
-      let matchOrderId ;
+      let matchOrderId;
       if (req.id) {
-          matchOrderId = req.id ? new ObjectId(req.id) : null;
+        matchOrderId = req.id ? new ObjectId(req.id) : null;
       }
 
       const matchConditions = [
@@ -137,12 +137,12 @@ const orderModule = {
       );
     }
   },
-  async orderUpdateStatas(req, res) {
+  async cancelOrder(req, res) {
     try {
       const orderId = new ObjectId(req.id);
 
       const cancelData = await common.singleUpdate(
-        { status: req.status },
+        { status: "Cancelled" },
         orderDetailsSchema,
         { _id: orderId }
       );

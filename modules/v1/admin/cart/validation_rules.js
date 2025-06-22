@@ -1,7 +1,7 @@
 const checkValidatorRules = {
 
   cartValidation:{
-    user_id: "required",
+    user_id: "",
   },
  
 };

@@ -28,7 +28,7 @@ const cryptojsHeaderValidator = {
         if (
           req.headers["accept-language"] === "en-GB,en-US;q=0.9,en;q=0.8" ||
           req.headers["accept-language"] ===
-            "en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7,gu;q=0.6"
+          "en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7,gu;q=0.6"
         ) {
           language = "en";
         } else {
@@ -42,8 +42,6 @@ const cryptojsHeaderValidator = {
 
       next();
     } catch (error) {
-      console.log(error);
-
       logger.error(error.message);
       return cryptojsHeaderValidator.sendResponse(
         res,
@@ -61,7 +59,7 @@ const cryptojsHeaderValidator = {
    */
   validateHeaderApiKey: async (req, res, next) => {
     const bypassHeaderKey = new Array(
-     
+
     );
     try {
       const apiKey =
@@ -119,8 +117,7 @@ const cryptojsHeaderValidator = {
    * @param {Function} callback
    */
   validateHeaderToken: async (req, res, next) => {
-    const bypassMethod = new Array("login", "signup");
-
+    const bypassMethod = new Array("login");
     const pathData = req.path.split("/");
     const method = pathData[pathData.length - 1];
     try {
@@ -128,14 +125,19 @@ const cryptojsHeaderValidator = {
         req.headers.token !== undefined && req.headers.token !== ""
           ? req.headers.token
           : "";
-
-      if (bypassMethod.indexOf(method) === -1) {
+          console.log("===========",headerToken)
+      if (
+        bypassMethod.indexOf(method) === -1
+      ) {
         if (headerToken !== "") {
-          const token = CryptoJS.AES.decrypt(headerToken, Key, { iv: iv })
-            .toString(CryptoJS.enc.Utf8)
-            .replace(/\s/g, "");
+        const token = CryptoJS.AES.decrypt(headerToken, Key, { iv: iv })
+                    .toString(CryptoJS.enc.Utf8)
+                    .replace(/\s/g, "");
+            console.log("token",token)
           if (token != "") {
             jwt.verify(token, GLOBALS.JWT_SECRET, (err, decoded) => {
+              console.log("errrr",err);
+              
               if (err) {
                 return this.sendResponse(
                   res,
@@ -228,7 +230,7 @@ const cryptojsHeaderValidator = {
         responsejson.data = resData;
       }
       const result = await cryptojsHeaderValidator.encryption(responsejson);
-      res.status(parseInt(resCode)).send(responsejson);
+      res.status(parseInt(resCode)).send(result);
     } catch (error) {
       // console.log(error.message);
       logger.error(error);
@@ -241,6 +243,7 @@ const cryptojsHeaderValidator = {
    * @param {Function} callback
    */
   decryption: async (req) => {
+    console.log(req.body)
     try {
       if (req.body !== undefined && Object.keys(req).length !== 0) {
         const request = JSON.parse(

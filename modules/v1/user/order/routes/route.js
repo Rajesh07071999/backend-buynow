@@ -5,7 +5,7 @@ const orderAuthRouter = express.Router();
 
 orderAuthRouter.post('/orderPlace', orderAuthController.orderPlace);
 orderAuthRouter.post('/orderListing', orderAuthController.orderListing);
-orderAuthRouter.post('/updateOrderStatus', orderAuthController.orderUpdateStatas);
+orderAuthRouter.post('/cancelOrder', orderAuthController.cancelOrder);
 
 
-export default orderAuthRouter;
+export default orderAuthRouter; 

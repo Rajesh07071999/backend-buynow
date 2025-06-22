@@ -131,10 +131,13 @@ const cryptojsHeaderValidatorUser = {
           const token = CryptoJS.AES.decrypt(headerToken, Key, { iv: iv })
             .toString(CryptoJS.enc.Utf8)
             .replace(/\s/g, "");
+
+            console.log(token)
           if (token != "") {
             jwt.verify(token, GLOBALS.JWT_SECRET, (err, decoded) => {
               if (err) {
-                return this.sendResponse(
+                console.log(err)
+                return cryptojsHeaderValidatorUser.sendResponse(
                   res,
                   CODES.UNAUTHORIZED,
                   lang[req.language]?.rest_keywords_token_notvalid_message,
@@ -224,6 +227,7 @@ const cryptojsHeaderValidatorUser = {
       if (resData != null) {
         responsejson.data = resData;
       }
+      console.log(responsejson)
       const result = await cryptojsHeaderValidatorUser.encryption(responsejson);
       res.status(parseInt(resCode)).send(result);
     } catch (error) {
