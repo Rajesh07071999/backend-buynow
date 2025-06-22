@@ -92,7 +92,6 @@ const adminAuthController = {
     );
 
     if (valid.status) {
-      // req.language = request.language;
       return authModule.editProfile(request, res);
     } else {
       return adminMiddleware.sendResponse(

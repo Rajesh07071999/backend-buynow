@@ -4,20 +4,20 @@ const checkValidatorRules = {
     price: "required|numeric",
     description: "required",
     image: "required",
-    category:"required",
-    stock_count:"required"
+    category: "required",
+    stock_count: "required"
   },
   editproductValidation: {
     name: "required",
     price: "required|numeric",
     description: "required",
     image: "required",
-    category:"required",
-    stock_count:"required",
-    id:"required"
+    category: "required",
+    stock_count: "required",
+    id: "required"
   },
-  deleteproductValidation:{
-    id:"required"
+  deleteproductValidation: {
+    id: "required"
   }
 };
 

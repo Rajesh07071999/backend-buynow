@@ -100,7 +100,6 @@ const cryptojsHeaderValidator = {
       }
     } catch (error) {
       logger.error(error.message);
-      console.log(error);
       return cryptojsHeaderValidator.sendResponse(
         res,
         CODES.ERROR,
@@ -125,19 +124,16 @@ const cryptojsHeaderValidator = {
         req.headers.token !== undefined && req.headers.token !== ""
           ? req.headers.token
           : "";
-          console.log("===========",headerToken)
       if (
         bypassMethod.indexOf(method) === -1
       ) {
         if (headerToken !== "") {
-        const token = CryptoJS.AES.decrypt(headerToken, Key, { iv: iv })
-                    .toString(CryptoJS.enc.Utf8)
-                    .replace(/\s/g, "");
-            console.log("token",token)
+          const token = CryptoJS.AES.decrypt(headerToken, Key, { iv: iv })
+            .toString(CryptoJS.enc.Utf8)
+            .replace(/\s/g, "");
           if (token != "") {
             jwt.verify(token, GLOBALS.JWT_SECRET, (err, decoded) => {
-              console.log("errrr",err);
-              
+
               if (err) {
                 return this.sendResponse(
                   res,
@@ -169,11 +165,9 @@ const cryptojsHeaderValidator = {
           );
         }
       } else {
-        console.log("Token Bypass");
         next();
       }
     } catch (error) {
-      console.log(error);
       return cryptojsHeaderValidator.sendResponse(
         res,
         CODES.ERROR,
@@ -232,7 +226,6 @@ const cryptojsHeaderValidator = {
       const result = await cryptojsHeaderValidator.encryption(responsejson);
       res.status(parseInt(resCode)).send(result);
     } catch (error) {
-      // console.log(error.message);
       logger.error(error);
     }
   },
@@ -243,7 +236,6 @@ const cryptojsHeaderValidator = {
    * @param {Function} callback
    */
   decryption: async (req) => {
-    console.log(req.body)
     try {
       if (req.body !== undefined && Object.keys(req).length !== 0) {
         const request = JSON.parse(
@@ -259,7 +251,6 @@ const cryptojsHeaderValidator = {
         return {};
       }
     } catch (error) {
-      console.log("Decryption Error :", error.message);
       return {};
     }
   },
@@ -275,7 +266,6 @@ const cryptojsHeaderValidator = {
       }).toString();
       return response;
     } catch (error) {
-      console.log("Encryption Error :", error.message);
       return {};
     }
   },

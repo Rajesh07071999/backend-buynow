@@ -1,9 +1,9 @@
 const checkValidatorRules = {
 
-  cartValidation:{
+  cartValidation: {
     user_id: "",
   },
- 
+
 };
 
 export default checkValidatorRules;

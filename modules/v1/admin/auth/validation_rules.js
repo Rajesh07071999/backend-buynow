@@ -9,27 +9,24 @@ const checkValidatorRules = {
   admindetailsValidation: {
     user_id: "required",
   },
-  changepasswordValidation:{
+  changepasswordValidation: {
     old_password: "required",
     new_password: "required",
   },
-  editprofileValidation:{
-    firstname:"required",
-    lastname:"required",
-    email:"required",
-    mobile_number:"required",
-    country_code:"required"
+  editprofileValidation: {
+    firstname: "required",
+    lastname: "required",
+    email: "required",
+    mobile_number: "required",
+    country_code: "required"
   },
-  userDetasilsValidations : {
-    id  : "required"
+  userDetasilsValidations: {
+    id: "required"
   },
-  deleteUserValidation:{
-    id  : "required"
-
+  deleteUserValidation: {
+    id: "required"
   },
-
-
-   userChangeActiveStatusValidation:{
+  userChangeActiveStatusValidation: {
     id: "required",
     status: "required"
   }

@@ -11,7 +11,7 @@ import productModel from "../../../../../database/schema/productSchema.js";
 import orderModel from "../../../../../database/schema/orderSchema.js";
 import cartModel from "../../../../../database/schema/cartSchema.js";
 const { ObjectId } = mongoose.Types;
-
+import moment from "moment"
 const adminAuthModule = {
   async login(req, res) {
     try {
@@ -356,35 +356,72 @@ const adminAuthModule = {
       );
     }
   },
-  async dashbaord(req, res) {
-    try {
-      const [totalUsers, totalProducts, totalOrders, totalCarts] = await Promise.all([
-        userModel.countDocuments(),
-        productModel.countDocuments(),
-        orderModel.countDocuments(),
-        cartModel.countDocuments()
-      ]);
-      const dashboardData = {
-        totalUsers,
-        totalProducts,
-        totalOrders,
-        totalCarts
+
+async dashbaord(req, res) {
+  try {
+    const [totalUsers, totalProducts, totalOrders, totalCarts] = await Promise.all([
+      userModel.countDocuments({is_active:true,is_deleted :false}),
+      productModel.countDocuments({is_active:true,is_deleted :false}),
+      orderModel.countDocuments({is_active:true,is_deleted :false}),
+      cartModel.countDocuments({is_active:true,is_deleted :false})
+    ]);
+
+    const past6Months = [...Array(6)].map((_, i) => {
+      const date = moment().subtract(i, "months");
+      return {
+        month: date.format("MMM"),
+        year: date.format("YYYY"),
+        start: date.startOf("month").toDate(),
+        end: date.endOf("month").toDate()
+      };
+    }).reverse();
+
+    const monthlyData = await Promise.all(
+      past6Months.map(async ({ month, start, end }) => {
+        const orders = await orderModel.find({ createdAt: { $gte: start, $lte: end } });
+        console.log(orders)
+        const revenue = orders.reduce((sum, order) => sum + (order.price || 0), 0);
+        return {
+          month,
+          orderCount: orders.length,
+          revenue
+        };
+      })
+    );
+    const categoryCounts = await productModel.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 }
+        }
       }
-      return adminMiddleware.sendResponse(
-        res,
-        Codes.SUCCESS,
-        lang[req.language].rest_keyword_success,
-        dashboardData
-      );
-    } catch (error) {
-      return adminMiddleware.sendResponse(
-        res,
-        Codes.VALIDATION_ERROR,
-        lang[req.language].rest_keywords_something_went_wrong,
-        null
-      );
-    }
-  },
+    ]);
+
+    const dashboardData = {
+      totalUsers,
+      totalProducts,
+      totalOrders,
+      totalCarts,
+      monthlyStats: monthlyData, 
+      categoryStats: categoryCounts 
+    };
+
+    return adminMiddleware.sendResponse(
+      res,
+      Codes.SUCCESS,
+      lang[req.language].rest_keyword_success,
+      dashboardData
+    );
+  } catch (error) {
+    return adminMiddleware.sendResponse(
+      res,
+      Codes.VALIDATION_ERROR,
+      lang[req.language].rest_keywords_something_went_wrong,
+      null
+    );
+  }
+}
+,
   async userList(req, res) {
     try {
       const userLists = await userModel.find({

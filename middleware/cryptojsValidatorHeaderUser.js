@@ -41,8 +41,6 @@ const cryptojsHeaderValidatorUser = {
 
       next();
     } catch (error) {
-      console.log(error);
-
       logger.error(error.message);
       return cryptojsHeaderValidatorUser.sendResponse(
         res,
@@ -99,7 +97,6 @@ const cryptojsHeaderValidatorUser = {
       }
     } catch (error) {
       logger.error(error.message);
-      console.log(error);
       return cryptojsHeaderValidatorUser.sendResponse(
         res,
         CODES.ERROR,
@@ -132,11 +129,9 @@ const cryptojsHeaderValidatorUser = {
             .toString(CryptoJS.enc.Utf8)
             .replace(/\s/g, "");
 
-            console.log(token)
           if (token != "") {
             jwt.verify(token, GLOBALS.JWT_SECRET, (err, decoded) => {
               if (err) {
-                console.log(err)
                 return cryptojsHeaderValidatorUser.sendResponse(
                   res,
                   CODES.UNAUTHORIZED,
@@ -171,7 +166,6 @@ const cryptojsHeaderValidatorUser = {
         next();
       }
     } catch (error) {
-      console.log(error);
       return cryptojsHeaderValidatorUser.sendResponse(
         res,
         CODES.ERROR,
@@ -227,11 +221,9 @@ const cryptojsHeaderValidatorUser = {
       if (resData != null) {
         responsejson.data = resData;
       }
-      console.log(responsejson)
       const result = await cryptojsHeaderValidatorUser.encryption(responsejson);
       res.status(parseInt(resCode)).send(result);
     } catch (error) {
-      // console.log(error.message);
       logger.error(error);
     }
   },
@@ -256,7 +248,6 @@ const cryptojsHeaderValidatorUser = {
         return {};
       }
     } catch (error) {
-      console.log("Decryption Error :", error.message);
       return {};
     }
   },
@@ -272,7 +263,6 @@ const cryptojsHeaderValidatorUser = {
       }).toString();
       return response;
     } catch (error) {
-      console.log("Encryption Error :", error.message);
       return {};
     }
   },
