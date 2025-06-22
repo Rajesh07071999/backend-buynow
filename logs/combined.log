@@ -10538,3 +10538,5 @@
 {"level":"info","message":"language set","timestamp":"2025-06-22T10:27:18.588Z"}
 {"level":"info","message":"api key is set","timestamp":"2025-06-22T10:27:18.593Z"}
 {"level":"info","message":"token is set","timestamp":"2025-06-22T10:27:18.600Z"}
+{"level":"info","message":"Server running : 4000","timestamp":"2025-06-22T11:03:36.339Z"}
+{"level":"info","message":"Server running : 4000","timestamp":"2025-06-22T11:06:49.695Z"}
