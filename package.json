@@ -24,6 +24,7 @@
     "mongoose": "^8.15.1",
     "multer": "^2.0.1",
     "rand-token": "^1.0.1",
+    "razorpay": "^2.9.6",
     "Validator": "^1.1.4",
     "winston": "^3.17.0"
   }
