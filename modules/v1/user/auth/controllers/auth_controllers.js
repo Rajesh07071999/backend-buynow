@@ -5,6 +5,7 @@ import Codes from "../../../../../config/statusCode.js";
 
 const userAuthController = {
     async register(req, res) {
+      
         const request = await userMiddleware.decryption(req);
         const valid = await userMiddleware.checkValidationRules(
           request,
@@ -55,40 +56,7 @@ const userAuthController = {
           );
         }
       },
-      async changePassword(req, res) {
-        const request = await userMiddleware.decryption(req);
-        const valid = await userMiddleware.checkValidationRules(
-          request,
-          validationRules.changepasswordValidation
-        );
-        if (valid.status) {
-          return authModule.changePassword(request, res);
-        } else {
-          return userMiddleware.sendResponse(
-            res,
-            Codes.VALIDATION_ERROR,
-            valid.error,
-            null
-          );
-        }
-      },
-      async editProfile(req, res) {
-        const request = await userMiddleware.decryption(req);
-        const valid = await userMiddleware.checkValidationRules(
-          request,
-          validationRules.editProfileValidation
-        );
-        if (valid.status) {
-          return authModule.editProfile(request, res);
-        } else {
-          return userMiddleware.sendResponse(
-            res,
-            Codes.VALIDATION_ERROR,
-            valid.error,
-            null
-          );
-        }
-      },
+ 
       async userDetails(req, res) {
         const request = await userMiddleware.decryption(req);
         const valid = await userMiddleware.checkValidationRules(

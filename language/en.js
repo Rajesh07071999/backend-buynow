@@ -44,36 +44,19 @@ const en = {
   rest_keyword__profile_update_success: "Profile updated successfully",
 
   rest_keywords_invalid_schedule_format: "Invalid cron schedule format",
-
-  //products
-  rest_keyword_product_added_success: "Product added successfully",
-  rest_keyword_product_added_rating_success: "Product Rating added successfully",
-  rest_keyword_product_added_error: "Error while adding Product, Please try again",
-  rest_keyword_product_edited_success: "Product edited successfully",
-  rest_keyword_product_edited_error: "Error while editing Product, Please try again",
-  rest_keyword_product_not_found: "Product not found",
-  rest_keyword_success_product_deleted: "Product deleted successfully",
-  rest_keyword_err_deleted_product: "Error while delete Product, Please try again",
-
-  // Cart
-  rest_keyword_cart_item_added: "Item added to cart successfully",
-  rest_keyword_cart_item_updated: "Cart item updated successfully",
-  rest_keyword_cart_item_removed: "Item removed from cart successfully",
-  rest_keyword_cart_cleared: "Cart cleared successfully",
-  rest_keyword_cart_not_found: "Cart not found",
-  rest_keyword_cart_empty: "Your cart is empty",
-  rest_keyword_cart_fetch_success: "Cart fetched successfully",
-  rest_keyword_cart_operation_failed: "Cart operation failed, please try again",
-  // Order
-  rest_keyword_order_placed_success: "Order placed successfully",
-  rest_keyword_order_placed_error: "Something went wrong while placing the order",
-  rest_keyword_order_cancelled_success: "Order cancelled successfully",
-  rest_keyword_order_cancelled_error: "Failed to cancel the order",
-  rest_keyword_order_not_found: "Order not found",
-  rest_keyword_order_list_fetch_success: "Order list fetched successfully",
-  rest_keyword_order_details_fetch_success: "Order details fetched successfully",
-  rest_keyword_order_status_updated: "Order status updated successfully",
-  rest_keyword_order_status_update_failed: "Failed to update order status",
+  // Subscription
+  rest_keywords_subscription_added_success: "Subscription plan added successfully",
+  rest_keywords_subscription_added_error: "Error while adding subscription plan, Please try again",
+  rest_keywords_subscription_list_success: "Subscription plan list found successfully",
+  rest_keywords_subscription_list_not_found: "Subscription plan list not found",
+  rest_keywords_subscription_detail_success: "Subscription plan details found successfully",
+  rest_keywords_subscription_detail_not_found: "Subscription plan details not found",
+  rest_keywords_subscription_deleted_success: "Subscription plan deleted successfully",
+  rest_keywords_subscription_deleted_error: "Error while deleting subscription plan, Please try again",
+  rest_keywords_subscription_data_not_found: "Subscription plan data not found",
+  rest_keywords_subscription_data_not_generated: "Subscription plan data not generated, Please try again later",
+  rest_keywords_subscription_fetch_same_data: "Subscription plan already exists"
+  
 
 
 

@@ -129,9 +129,12 @@ const cryptojsHeaderValidatorUser = {
             .toString(CryptoJS.enc.Utf8)
             .replace(/\s/g, "");
 
+
           if (token != "") {
             jwt.verify(token, GLOBALS.JWT_SECRET, (err, decoded) => {
               if (err) {
+                console.log(err);
+                
                 return cryptojsHeaderValidatorUser.sendResponse(
                   res,
                   CODES.UNAUTHORIZED,
@@ -248,6 +251,8 @@ const cryptojsHeaderValidatorUser = {
         return {};
       }
     } catch (error) {
+      console.log(error);
+      
       return {};
     }
   },

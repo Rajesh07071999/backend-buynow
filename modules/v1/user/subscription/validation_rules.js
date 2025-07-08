@@ -1,6 +1,7 @@
 const checkValidatorRules = {
-  productListingValidation: {
-    user_id: "required",
+  addSubscriptionplansValidation: {
+    name: "required",
+    price: "required",
 
   },
   addProductRatingValidation: {
