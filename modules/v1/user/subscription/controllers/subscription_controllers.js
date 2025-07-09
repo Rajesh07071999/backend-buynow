@@ -58,6 +58,23 @@ const productsAuthController = {
           );
         }
       },
+      async paymentCapture(req, res) {
+        const request = await userMiddleware.decryption(req);
+        const valid = await userMiddleware.checkValidationRules(
+          request,
+          
+        );
+        if (valid.status) {
+          return subscriptionModule.paymentCapture(request, res);
+        } else {
+          return userMiddleware.sendResponse(
+            res,
+            Codes.VALIDATION_ERROR,
+            valid.error,
+            null
+          );
+        }
+      },
 
 }
 

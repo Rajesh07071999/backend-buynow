@@ -10,10 +10,7 @@ import database from "./config/database.js";
 import userRoute from "./modules/v1/user/route_manager.js"
 dotenv.config();
 const app = express();
-app.use(cors(
-{  origin: "http://localhost:5173",  
-  credentials: true,  }
-));
+app.use(cors());
 app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(bodyParser.text({ limit: "100mb" }));
@@ -29,7 +26,7 @@ app.use((err, req, res, next) => {
 });
 app.use("/api/v1/user/", userRoute);
 
-
+ 
 try {
     app.listen(process.env.PORT);
     logger.info('Server running : ' + process.env.PORT);

@@ -8,5 +8,6 @@ userAuthRouter.post('/login', userAuthController.login);
 userAuthRouter.post('/logout', userAuthController.logout);
 
 userAuthRouter.post('/userDetails', userAuthController.userDetails);
+userAuthRouter.post('/contactUs', userAuthController.contactUs);
 
 export default userAuthRouter;

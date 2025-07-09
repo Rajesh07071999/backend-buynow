@@ -27,13 +27,15 @@ const en = {
   rest_keyword_old_email_required: "Old email id is required",
   rest_keywords_success_login: "Login Successfully",
   rest_keywords_success_signup: "Sign Up Successfully",
+  rest_keywords_contactus_success: "Your message has been sent successfully! ✅",
+  rest_keywords_contactus_error: "Something went wrong. Please try again later." ,
 
   //Authentication
   rest_keywords_apikey_not_found: "Please provide api key",
   rest_keywords_invalid_api_key: "Invalid api key",
   rest_keywords_token_not_found: "Please Provide token",
+  rest_keyword_invalid_credentials: "It looks like you haven't signed up using a social account. Please sign up to continue.",
 
-  rest_keyword_invalid_credentials: "Invalid login credentials",
   rest_keyword_admin_login_inactive: "Admin account is inactive",
   rest_keyword_admin_login_success: "Login successfully",
   rest_keyword_admin_logout: "Logout successfully",

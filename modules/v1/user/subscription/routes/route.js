@@ -6,5 +6,6 @@ const productsAuthRouter = express.Router();
 productsAuthRouter.post('/addSubscriptionplans', productsAuthController.addSubscriptionplans);
 productsAuthRouter.post('/subscriptionListing', productsAuthController.subscriptionListing);
 productsAuthRouter.post('/payment', productsAuthController.payment);
+productsAuthRouter.post('/paymentCapture', productsAuthController.paymentCapture);
 
 export default productsAuthRouter;

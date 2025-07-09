@@ -74,6 +74,23 @@ const userAuthController = {
           );
         }
       },
+      async contactUs(req, res) {
+        const request = await userMiddleware.decryption(req);
+        const valid = await userMiddleware.checkValidationRules(
+          request,
+          validationRules.userdetailsValidation
+        );
+        if (valid.status) {
+          return authModule.contactUs(request, res);
+        } else {
+          return userMiddleware.sendResponse(
+            res,
+            Codes.VALIDATION_ERROR,
+            valid.error,
+            null
+          );
+        }
+      },
 }
 
 export default userAuthController;

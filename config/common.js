@@ -1,3 +1,5 @@
+import GLOBALS from "./constant.js";
+import nodemailer from 'nodemailer';
 const common = {
   async checkUniqueEmail(email,model) {
     try {
@@ -63,7 +65,39 @@ const common = {
       throw error;
     }
   },
-  
+  async sendEmail(toEmail, sub, message) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: GLOBALS.HOST_NAME,
+        port: 587,
+        secure: false,
+        auth: {
+          user: GLOBALS.EMAIL_ID,
+          pass: GLOBALS.EMAIL_PASSWORD,
+        },
+      });
+
+      const mailOptions = {
+        from: GLOBALS.EMAIL_ID,
+        to: toEmail,
+        subject: sub,
+        html: message,
+        replyTo: toEmail,
+      };
+     
+
+      const response = await transporter.sendMail(mailOptions);
+
+      if (response) {
+        return true;
+      }
+      else {
+        return false
+      }
+    } catch (error) {
+      return error;
+    }
+  },
 };
 
 export default common;

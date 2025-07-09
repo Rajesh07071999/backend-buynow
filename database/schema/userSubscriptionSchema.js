@@ -24,7 +24,7 @@ const userSubscriptionSchema = new mongoose.Schema({
 });
 
 const userSubscriptionModel = mongoose.model(
-  "tbl_user_subscription",
+  "tbl_user_subscriptions",
   userSubscriptionSchema
 );
 export default userSubscriptionModel;

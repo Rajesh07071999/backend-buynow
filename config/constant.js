@@ -13,7 +13,10 @@ const GLOBALS = {
   IV: process.env.IV,
   API_KEY_ORIGINAL: process.env.API_KEY,
   DB_URL: process.env.DB_URL,
-  JWT_SECRET: process.env.JWT_SECRET
+  JWT_SECRET: process.env.JWT_SECRET,
+  HOST_NAME: process.env.HOST_NAME,
+  EMAIL_ID: process.env.EMAIL_ID,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
 };
 
 
